@@ -17,8 +17,7 @@ import { FileText, Scissors, Plus, X, Eye, Loader2, Info, ChevronRight } from 'l
 import { useToast } from '@/hooks/use-toast';
 import * as pdfjsLib from 'pdfjs-dist';
 
-const PDF_JS_VERSION = '3.11.174';
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDF_JS_VERSION}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 interface PageRange {
   start: string;

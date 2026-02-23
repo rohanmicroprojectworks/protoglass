@@ -25,7 +25,9 @@ import {
   Download,
   ShieldCheck,
   Zap,
-  Info
+  Info,
+  Maximize,
+  X
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -51,6 +53,7 @@ export const PSDViewerTool: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [zoom, setZoom] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { toast } = useToast();
 
   const handleFileSelect = async (files: File[]) => {
@@ -115,38 +118,48 @@ export const PSDViewerTool: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isFullscreen]);
+
+  // Escape to close fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsFullscreen(false);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isFullscreen]);
 
   if (!sourceFile) {
     return (
-      <div className="max-w-5xl mx-auto w-full px-4 py-12 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700 relative">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <div className="p-6 bg-blue-500/10 dark:bg-blue-500/5 rounded-3xl mb-4">
-            <Layers className="w-16 h-16 text-blue-500" />
+      <div className="max-w-5xl mx-auto w-full px-4 py-4 space-y-5 animate-in fade-in slide-in-from-bottom-8 duration-700 relative">
+        <div className="flex flex-col items-center text-center space-y-2">
+          <div className="p-4 bg-blue-500/10 dark:bg-blue-500/5 rounded-2xl mb-2">
+            <Layers className="w-10 h-10 text-blue-500" />
           </div>
-          <h2 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">PSD Studio</h2>
-          <p className="text-xl text-slate-500 dark:text-slate-400 font-bold max-w-2xl">
-            Professional high-fidelity Photoshop rendering. <br />Full layer hierarchy and mask composition.
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">PSD Studio</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium max-w-xl">
+            Professional high-fidelity Photoshop rendering with full layer composition.
           </p>
         </div>
 
-        <FileUpload onFilesSelected={handleFileSelect} accept=".psd" label="Select PSD files from your device to preview and export." className="h-[400px]" />
+        <FileUpload onFilesSelected={handleFileSelect} accept=".psd" label="Select PSD files from your device to preview and export." className="h-[240px]" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-          <div className="glass-card p-8 rounded-3xl space-y-3">
-            <Zap className="w-8 h-8 text-amber-500" />
-            <h4 className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-xs">4-Stage Engine</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">Raw data, high-fidelity, safe mode, and composite fallbacks for maximum compatibility.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="glass-card p-5 rounded-2xl space-y-2">
+            <Zap className="w-6 h-6 text-amber-500" />
+            <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-widest text-[10px]">4-Stage Engine</h4>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Raw data, high-fidelity, safe mode, and composite fallbacks.</p>
           </div>
-          <div className="glass-card p-8 rounded-3xl space-y-3">
-            <ShieldCheck className="w-8 h-8 text-emerald-500" />
-            <h4 className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-xs">Sandbox Privacy</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">Your creative work never leaves your device. No cloud uploads.</p>
+          <div className="glass-card p-5 rounded-2xl space-y-2">
+            <ShieldCheck className="w-6 h-6 text-emerald-500" />
+            <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-widest text-[10px]">Sandbox Privacy</h4>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Your creative work never leaves your device. No cloud uploads.</p>
           </div>
-          <div className="glass-card p-8 rounded-3xl space-y-3">
-            <Layers className="w-8 h-8 text-blue-500" />
-            <h4 className="font-black text-slate-900 dark:text-white uppercase tracking-widest text-xs">Complex PSD Support</h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">Smart objects, adjustment layers, 15+ blend modes, and linked file handling.</p>
+          <div className="glass-card p-5 rounded-2xl space-y-2">
+            <Layers className="w-6 h-6 text-blue-500" />
+            <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-widest text-[10px]">Complex PSD Support</h4>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Smart objects, adjustment layers, 15+ blend modes.</p>
           </div>
         </div>
       </div>
@@ -154,9 +167,9 @@ export const PSDViewerTool: React.FC = () => {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden animate-in fade-in duration-700 bg-slate-50 dark:bg-zinc-950">
+    <div className="h-full flex flex-col overflow-hidden animate-in fade-in duration-700">
       {/* Studio Toolbar */}
-      <div className="flex justify-between items-center p-4 md:px-8 border-b border-black/5 dark:border-white/5 bg-white/60 dark:bg-black/60 backdrop-blur-3xl shrink-0 z-50">
+      <div className="flex justify-between items-center p-4 md:px-8 border-b border-black/[0.04] dark:border-white/5 bg-white/60 dark:bg-black/40 backdrop-blur-3xl shrink-0 z-50">
         <div className="flex items-center space-x-6">
           <Button
             variant="ghost"
@@ -166,9 +179,9 @@ export const PSDViewerTool: React.FC = () => {
             <ArrowLeft className="w-6 h-6" />
           </Button>
           <div className="min-w-0">
-            <h2 className="text-xl font-black text-slate-900 dark:text-white truncate max-w-[150px] md:max-w-lg leading-none">{sourceFile.name}</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white truncate max-w-[150px] md:max-w-lg leading-none">{sourceFile.name}</h2>
             <div className="flex items-center space-x-2 mt-1.5 flex-wrap gap-y-1">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary dark:text-primary">Studio Render</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary dark:text-primary">Studio Render</span>
               <span className="text-slate-300 dark:text-zinc-700">•</span>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{(sourceFile.size / 1024 / 1024).toFixed(2)} MB</span>
               {renderResult && (
@@ -219,6 +232,17 @@ export const PSDViewerTool: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={!renderResult?.canvas}
+              onClick={() => setIsFullscreen(true)}
+              className="h-12 w-12 rounded-2xl glass shadow-lg border-white/20 hover:scale-110 transition-transform"
+              title="Fit to Screen"
+            >
+              <Maximize className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </div>
@@ -226,7 +250,7 @@ export const PSDViewerTool: React.FC = () => {
       {/* Main Studio Viewport */}
       <div
         ref={containerRef}
-        className="flex-1 relative overflow-auto custom-scrollbar flex items-center justify-center p-12 md:p-24 bg-slate-100 dark:bg-zinc-950/50"
+        className="flex-1 relative overflow-auto custom-scrollbar flex items-center justify-center p-12 md:p-24 bg-white/30 dark:bg-zinc-950/50"
       >
         <AnimatePresence mode="wait">
           {isProcessing && !renderResult ? (
@@ -280,6 +304,50 @@ export const PSDViewerTool: React.FC = () => {
           image-rendering: crisp-edges;
         }
       `}</style>
+
+      {/* Fullscreen Fit-to-Screen Overlay */}
+      <AnimatePresence>
+        {isFullscreen && renderResult?.canvas && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[200] bg-black flex items-center justify-center"
+            onClick={() => setIsFullscreen(false)}
+          >
+            <canvas
+              ref={(el) => {
+                if (el && renderResult?.canvas) {
+                  const srcW = renderResult.canvas.width;
+                  const srcH = renderResult.canvas.height;
+                  const screenW = window.innerWidth;
+                  const screenH = window.innerHeight;
+                  const scale = Math.min(screenW / srcW, screenH / srcH);
+                  el.width = Math.round(srcW * scale);
+                  el.height = Math.round(srcH * scale);
+                  el.style.width = `${el.width}px`;
+                  el.style.height = `${el.height}px`;
+                  const ctx = el.getContext('2d');
+                  if (ctx) {
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(renderResult.canvas, 0, 0, el.width, el.height);
+                  }
+                }
+              }}
+              className="block image-render-auto"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="absolute top-6 right-6 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-xl flex items-center justify-center text-white transition-all duration-300"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

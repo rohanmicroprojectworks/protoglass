@@ -32,8 +32,10 @@ export const ImageConverterTool: React.FC = () => {
         // Handle individual image conversion via Canvas
         for (const file of files) {
           const img = new Image();
-          img.src = URL.createObjectURL(file);
+          const objectUrl = URL.createObjectURL(file);
+          img.src = objectUrl;
           await new Promise((resolve) => (img.onload = resolve));
+          URL.revokeObjectURL(objectUrl);
 
           const canvas = document.createElement('canvas');
           canvas.width = img.width;

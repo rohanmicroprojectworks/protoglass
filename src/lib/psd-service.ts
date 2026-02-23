@@ -71,7 +71,7 @@ export const renderPSDToCanvas = async (file: File): Promise<PSDRenderResult> =>
     if (psd.imageData && psd.width && psd.height) return buildResult(pixelDataToCanvas(psd.imageData as any), 'raw-data', psd);
     const manual = compositeRawLayers(psd);
     if (manual) return buildResult(manual, 'raw-data', psd);
-  } catch (e: any) { console.warn('[PSD] Stage 0 failed:', e.message); }
+  } catch { /* Stage fallback */ }
 
   // Stage 1: Canvas-based high fidelity
   try {

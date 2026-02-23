@@ -35,8 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PDF_JS_VERSION = '3.11.174';
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDF_JS_VERSION}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 interface SearchResult {
   pageNumber: number;
@@ -109,7 +108,7 @@ export const PDFViewerTool: React.FC<PDFViewerToolProps> = ({ onExit, onSwitchTo
           await page.render({ canvasContext: context, viewport }).promise;
         }
       } catch (err) {
-        console.error("Render Error:", err);
+        // Render error handled silently
       }
     }
   }, [pdfDoc, currentPage, zoom]);
@@ -203,18 +202,18 @@ export const PDFViewerTool: React.FC<PDFViewerToolProps> = ({ onExit, onSwitchTo
 
   if (!sourceFile) {
     return (
-      <div className="h-full flex flex-col items-center justify-center p-6 bg-slate-100 dark:bg-zinc-950 relative">
+      <div className="h-full flex flex-col items-center justify-center p-6 relative">
         <Button
           variant="ghost"
           onClick={() => onExit?.()}
-          className="absolute top-8 left-8 h-12 w-12 rounded-full glass hover:bg-white/40 shadow-2xl z-50 flex items-center justify-center border-white/40"
+          className="absolute top-8 left-8 h-12 w-12 rounded-full glass-button hover:bg-white/60 shadow-lg z-50 flex items-center justify-center"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="w-full max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="text-center space-y-2">
-            <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Immersive Viewer</h2>
-            <p className="text-slate-500 dark:text-slate-400 font-bold">Fast, local document viewing with zero server overhead.</p>
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight uppercase">Immersive Viewer</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Fast, local document viewing with zero server overhead.</p>
           </div>
           <FileUpload onFilesSelected={(f) => setSourceFile(f[0])} accept=".pdf" label="Select PDF files from your device to view instantly." className="h-[450px]" />
         </div>
@@ -226,7 +225,7 @@ export const PDFViewerTool: React.FC<PDFViewerToolProps> = ({ onExit, onSwitchTo
     <div
       ref={viewerRef}
       className={cn(
-        "flex flex-col h-full bg-slate-100 dark:bg-zinc-950 relative overflow-hidden transition-all duration-700",
+        "flex flex-col h-full relative overflow-hidden transition-all duration-700",
         isFullscreen ? "fixed inset-0 z-[100] rounded-none" : "w-full"
       )}
     >
@@ -335,7 +334,7 @@ export const PDFViewerTool: React.FC<PDFViewerToolProps> = ({ onExit, onSwitchTo
           )}
         </AnimatePresence>
 
-        <main ref={containerRef} className="flex-1 overflow-auto bg-slate-100 dark:bg-zinc-950 flex flex-col items-center custom-scrollbar relative">
+        <main ref={containerRef} className="flex-1 overflow-auto flex flex-col items-center custom-scrollbar relative">
           {isLoading ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center space-y-6 bg-white/10 backdrop-blur-sm z-50">
               <Loader2 className="w-16 h-16 animate-spin text-secondary" />

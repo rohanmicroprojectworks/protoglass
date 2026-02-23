@@ -13,12 +13,14 @@ import { ImageConverterTool } from '@/components/tools/ImageConverterTool';
 import { PDFViewerTool } from '@/components/tools/PDFViewerTool';
 import { PSDViewerTool } from '@/components/tools/PSDViewerTool';
 import { ProtectTool } from '@/components/tools/ProtectTool';
-import { ArrowLeft, Layers, Scissors, Minimize2, Github, Image as ImageIcon, Eye, Lock, FileImage } from 'lucide-react';
+import { ImageCompressorTool } from '@/components/tools/ImageCompressorTool';
+import { ArrowLeft, Layers, Scissors, Minimize2, Github, Image as ImageIcon, Eye, Lock, FileImage, Shrink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Footer } from '@/components/Footer';
 
-type ActiveTool = 'merge' | 'split' | 'compress' | 'image-converter' | 'pdf-viewer' | 'psd-viewer' | 'protect' | null;
+type ActiveTool = 'merge' | 'split' | 'compress' | 'image-compressor' | 'image-converter' | 'pdf-viewer' | 'psd-viewer' | 'protect' | null;
 
 export default function PDFWorkspace() {
   const [activeTool, setActiveTool] = useState<ActiveTool>(null);
@@ -78,6 +80,13 @@ export default function PDFWorkspace() {
       themeColor: 'bg-purple-500 dark:bg-orange-400'
     },
     {
+      id: 'image-compressor' as const,
+      name: 'Image Compressor',
+      description: 'Compress PNG, JPG, WebP, and HEIC with live preview',
+      icon: Shrink,
+      themeColor: 'bg-teal-500 dark:bg-amber-500'
+    },
+    {
       id: 'protect' as const,
       name: 'Security Studio',
       description: 'Add password protection or unlock restricted files',
@@ -97,6 +106,7 @@ export default function PDFWorkspace() {
       case 'split': return <SplitTool initialFile={preloadedFile} />;
       case 'compress': return <CompressTool initialFile={preloadedFile} />;
       case 'image-converter': return <ImageConverterTool />;
+      case 'image-compressor': return <ImageCompressorTool />;
       case 'psd-viewer': return <PSDViewerTool />;
       case 'pdf-viewer': return (
         <PDFViewerTool
@@ -112,7 +122,7 @@ export default function PDFWorkspace() {
   return (
     <div className="h-[100dvh] flex flex-col font-body overflow-hidden text-slate-800 dark:text-slate-100 selection:bg-secondary/20 relative bg-transparent">
       <AnimatePresence>
-        {activeTool !== 'pdf-viewer' && activeTool !== 'psd-viewer' && (
+        {activeTool !== 'pdf-viewer' && (
           <motion.header
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -182,7 +192,7 @@ export default function PDFWorkspace() {
                   transition={{ delay: 0.3 }}
                   className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed px-4"
                 >
-                  Professional browser-native tools for your documents. <br className="hidden md:block" /> No uploads, no servers, just pure client-side magic.
+                  Local First. Privacy Always. Movement. <br className="hidden md:block" /> No uploads, no servers, just pure client-side magic.
                 </motion.p>
               </div>
 
@@ -209,6 +219,9 @@ export default function PDFWorkspace() {
                   </motion.div>
                 ))}
               </div>
+
+              {/* Footer — visible when scrolled to bottom */}
+              <Footer />
             </motion.div>
           ) : (
             <motion.div
@@ -219,10 +232,10 @@ export default function PDFWorkspace() {
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className={cn(
                 "w-full h-full flex flex-col min-h-0",
-                (activeTool !== 'pdf-viewer' && activeTool !== 'psd-viewer') && "max-w-7xl mx-auto p-4 md:p-6 lg:p-8"
+                (activeTool !== 'pdf-viewer') && "max-w-7xl mx-auto p-4 md:p-6 lg:p-8"
               )}
             >
-              {(activeTool !== 'pdf-viewer' && activeTool !== 'psd-viewer') && (
+              {(activeTool !== 'pdf-viewer') && (
                 <div className="mb-4 flex items-center shrink-0">
                   <Button
                     variant="ghost"
@@ -243,11 +256,11 @@ export default function PDFWorkspace() {
 
               <div className={cn(
                 "flex-1 relative flex flex-col min-h-0",
-                (activeTool !== 'pdf-viewer' && activeTool !== 'psd-viewer') ? "glass p-4 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-lg overflow-hidden" : "w-full"
+                (activeTool !== 'pdf-viewer') ? "glass p-4 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-lg overflow-hidden" : "w-full"
               )}>
                 <div className={cn(
                   "flex-1 flex flex-col min-h-0",
-                  (activeTool !== 'pdf-viewer' && activeTool !== 'psd-viewer') && "overflow-y-auto custom-scrollbar"
+                  (activeTool !== 'pdf-viewer') && "overflow-y-auto custom-scrollbar"
                 )}>
                   {renderActiveWorkspace()}
                 </div>
